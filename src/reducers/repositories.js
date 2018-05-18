@@ -18,6 +18,7 @@ const repositories = (state = { isFetching: false, items: [] }, action) => {
 
 export const repositoriesByUser = (state = {}, action) => {
   switch (action.type) {
+    case 'RECEIVE_REPOSITORIES':
     case 'FETCH_REPOSITORIES':
       return {
         ...state,
