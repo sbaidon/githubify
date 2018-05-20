@@ -3,7 +3,7 @@ const repositories = (state = { isFetching: false, items: [] }, action) => {
     case 'FETCH_REPOSITORIES':
       return {
         ...state,
-        isFetching: false,
+        isFetching: true,
       };
     case 'RECEIVE_REPOSITORIES':
       return {
@@ -24,6 +24,16 @@ export const repositoriesByUser = (state = {}, action) => {
         ...state,
         [action.user]: repositories(state[action.repository], action),
       };
+    default:
+      return state;
+  }
+};
+
+export const activeUser = (state = null, action) => {
+  switch (action.type) {
+    case 'FETCH_REPOSITORIES':
+      const { user } = action;
+      return user;
     default:
       return state;
   }

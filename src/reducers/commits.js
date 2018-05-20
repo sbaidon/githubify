@@ -3,13 +3,13 @@ const commits = (state = { isFetching: false, items: [] }, action) => {
     case 'FETCH_COMMITS':
       return {
         ...state,
-        isFetching: false,
+        isFetching: true,
       };
     case 'RECEIVE_COMMITS':
       return {
         ...state,
         isFetching: false,
-        items: action.commits,
+        items: [...state.items, ...action.commits],
       };
     default:
       return state;
@@ -18,11 +18,21 @@ const commits = (state = { isFetching: false, items: [] }, action) => {
 
 export const commitsByRepository = (state = {}, action) => {
   switch (action.type) {
+    case 'RECEIVE_COMMITS':
     case 'FETCH_COMMITS':
       return {
         ...state,
         [action.repository]: commits(state[action.repository], action),
       };
+    default:
+      return state;
+  }
+};
+
+export const activeRepository = (state = null, action) => {
+  switch (action.type) {
+    case 'RECEIVE_COMMITS':
+      return action.repository;
     default:
       return state;
   }
