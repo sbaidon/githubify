@@ -1,1 +1,15 @@
+.repository-grid {
+  padding: 1em 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  grid-gap: 1em;
+}
 
+.repository {
+  display: grid;
+  grid-template-rows: 2fr 1fr;
+}
+
+.commits-grid {
+  display: grid;
+}
