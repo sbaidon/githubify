@@ -31,6 +31,7 @@ export const commitsByRepository = (state = {}, action) => {
 
 export const activeRepository = (state = null, action) => {
   switch (action.type) {
+    case 'EMPTY_COMMITS':
     case 'RECEIVE_COMMITS':
       return action.repository;
     default:

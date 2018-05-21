@@ -1,6 +1,11 @@
 import axios from 'axios';
 const BASE_URL = 'https://api.github.com';
 
+export const emptyCommits = () => ({
+  type: 'EMPTY_COMMITS',
+  repository: null,
+});
+
 export const fetchCommits = repository => ({
   type: 'FETCH_COMMITS',
   repository,
@@ -25,6 +30,7 @@ export const receiveRepositories = (repositories, user) => ({
 
 export const getRepositories = user => {
   return dispatch => {
+    dispatch(emptyCommits());
     dispatch(fetchRepositories(user));
     return axios
       .get(`${BASE_URL}/users/${user}/repos`)

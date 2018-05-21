@@ -6,6 +6,7 @@ export default function UserForm({ onSubmit }) {
       <div className="field has-addons">
         <div className="control">
           <input
+            required={true}
             className="input"
             type="text"
             placeholder="Find a repository"

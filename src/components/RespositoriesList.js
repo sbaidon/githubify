@@ -7,25 +7,19 @@ class RepositoriesList extends Component {
   };
 
   render() {
-    const { repositories: { items, isFetching } } = this.props;
-
-    if (!items.length && !isFetching) {
-      return (
-        <h1 className="title has-text-centered">
-          Please type in a github username
-        </h1>
-      );
-    }
+    const { repositories: { items } } = this.props;
     return (
-      <ul className="repository-grid">
-        {items.map((repository, index) => (
-          <Repository
-            key={index}
-            repository={repository}
-            onClick={this.onClick}
-          />
-        ))}
-      </ul>
+      <section className="section">
+        <ul className="repository-grid">
+          {items.map((repository, index) => (
+            <Repository
+              key={index}
+              repository={repository}
+              onClick={this.onClick}
+            />
+          ))}
+        </ul>
+      </section>
     );
   }
 }
