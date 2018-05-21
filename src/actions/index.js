@@ -11,10 +11,11 @@ export const fetchCommits = repository => ({
   repository,
 });
 
-export const receiveCommits = (commits, repository) => ({
+export const receiveCommits = (commits, repository, lastPage) => ({
   type: 'RECEIVE_COMMITS',
   commits,
   repository,
+  lastPage,
 });
 
 export const fetchRepositories = user => ({
@@ -35,22 +36,21 @@ export const getRepositories = user => {
     return axios
       .get(`${BASE_URL}/users/${user}/repos`)
       .then(({ data }) => dispatch(receiveRepositories(data, user)))
-      .catch(_ => {
-        dispatch(receiveRepositories([], user));
-      });
   };
 };
+
+const lastPageRegex = /.*&page=(\d*)/;
 
 export const getCommits = (owner, repository, page = 1) => {
   return dispatch => {
     dispatch(fetchCommits(repository));
     return axios
       .get(
-        `${BASE_URL}/repos/${owner}/${repository}/commits?per_page=20&page=${page}`,
+        `${BASE_URL}/repos/${owner}/${repository}/commits?per_page=20&page=${page}&sort=author-date&order=asc`,
       )
-      .then(({ data }) => dispatch(receiveCommits(data, repository)))
-      .catch(_ => {
-        console.log(_);
-      });
+      .then((response) => {
+        const lastPage = Number(response.headers.link.match(lastPageRegex).pop());
+        dispatch(receiveCommits(response.data, repository, lastPage)) 
+      })
   };
 };

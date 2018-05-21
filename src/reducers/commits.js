@@ -4,11 +4,13 @@ const commits = (state = { isFetching: false, items: [] }, action) => {
       return {
         ...state,
         isFetching: true,
+        lastPage: null,
       };
     case 'RECEIVE_COMMITS':
       return {
         ...state,
         isFetching: false,
+        lastPage: action.lastPage,
         items: [...state.items, ...action.commits],
       };
     default:

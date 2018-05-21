@@ -1,11 +1,5 @@
-import {
-  connect
-} from 'react-redux';
-import {
-  getRepositories,
-  emptyCommits,
-  getCommits
-} from '../actions';
+import { connect } from 'react-redux';
+import { getRepositories, emptyCommits, getCommits } from '../actions';
 import Main from '../components/Main';
 
 const mapStateToProps = ({
@@ -27,13 +21,13 @@ const mapStateToProps = ({
 const mapDispatchToProps = dispatch => {
   return {
     getRepositories(user) {
-      dispatch(getRepositories(user));
+      return dispatch(getRepositories(user));
     },
     emptyCommits() {
-      dispatch(emptyCommits());
+      return dispatch(emptyCommits());
     },
-    getCommits(owner, repository) {
-      dispatch(getCommits(owner, repository));
+    getCommits(owner, repository, page = 0) {
+      return dispatch(getCommits(owner, repository, page));
     },
   };
 };
