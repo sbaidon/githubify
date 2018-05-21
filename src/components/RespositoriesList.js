@@ -3,7 +3,7 @@ import Repository from './Repository';
 
 class RepositoriesList extends Component {
   onClick = (owner, repository) => {
-    this.props.fetchCommits(owner, repository);
+    this.props.getCommits(owner, repository);
   };
 
   render() {

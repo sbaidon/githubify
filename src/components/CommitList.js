@@ -31,14 +31,14 @@ class CommitList extends Component {
   }
 
   render() {
-    const { onBack } = this.props;
+    const { emptyCommits } = this.props;
     const { filteredCommits: items } = this.state;
 
     return (
       <section className="section">
         <div className="field">
           <div className="control">
-            <a onClick={onBack} className="button">
+            <a onClick={emptyCommits} className="button">
               Back
             </a>
           </div>
