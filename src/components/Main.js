@@ -16,12 +16,8 @@ class Main extends Component {
     const user = e.target.user.value;
     this.props
       .getRepositories(user)
-      .then(() => {
-        this.setState({ isUserValid: true });
-      })
-      .catch(_ => {
-        this.setState({ isUserValid: false });
-      });
+      .then(() => this.setState({ isUserValid: true }))
+      .catch(_ => this.setState({ isUserValid: false }));
   };
 
   getNextCommits = page => {

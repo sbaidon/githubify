@@ -9,11 +9,10 @@ class RepositoriesList extends Component {
   };
 
   render() {
-    const { repositories: { items } } = this.props;
     return (
       <section className="section">
         <ul className="repository-grid">
-          {items.map((repository, index) => (
+          {this.props.repositories.items.map((repository, index) => (
             <Repository
               key={index}
               repository={repository}

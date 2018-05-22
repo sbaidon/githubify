@@ -4,40 +4,41 @@ import Commit from './Commit';
 class CommitList extends Component {
   constructor(props) {
     super(props);
-    const { commits: { items } } = props;
     this.state = {
-      filteredCommits: items,
+      filteredCommits: props.commits.items,
       page: 1,
     };
   }
 
-  isLastPage = () => this.state.page >= this.props.lastPage;
-
-  onChange = e => {
-    this.filterCommits(e.target.value);
-  };
-
-  filterCommits(keyword) {
-    const regex = new RegExp(keyword, 'gi');
-    const filteredCommits = this.props.commits.items.filter(commit =>
-      regex.test(commit.commit.message),
-    );
-    this.setState({
-      filteredCommits,
-    });
-  }
-
-  static getDerivedStateFromProps(nextProps, prevState) {
+  static getDerivedStateFromProps(nextProps) {
     return {
       filteredCommits: nextProps.commits.items,
     };
   }
 
+  componentDidMount() {
+    const options = { rootMargin: '0px', threshold: 1.0 };
+    const observer = new IntersectionObserver(this.observerCallback, options);
+    observer.observe(this.getLastCommit());
+  }
+
+  isLastPage = () => this.state.page >= this.props.lastPage;
+
+  filterCommits = e => {
+    const keyword = e.target.value;
+    const regex = new RegExp(keyword, 'gi');
+    const filteredCommits = this.props.commits.items.filter(commit =>
+      regex.test(commit.commit.message),
+    );
+    this.setState({ filteredCommits });
+  };
+
+  // Array Destructuring - Helps to avoid accessing the parameter like this: entries[0], improves readability
   observerCallback = ([entry], observer) => {
     if (entry.isIntersecting) {
+      observer.unobserve(this.getLastCommit());
       const currentPage = this.state.page;
       const nextPage = currentPage + 1;
-      observer.unobserve(this.getLastCommit());
       if (this.isLastPage()) {
         return;
       }
@@ -48,21 +49,16 @@ class CommitList extends Component {
     }
   };
 
-  componentDidMount() {
-    const options = { rootMargin: '0px', threshold: 1.0 };
-    const observer = new IntersectionObserver(this.observerCallback, options);
-    observer.observe(this.getLastCommit());
-  }
-
   getLastCommit = () => {
-    const commits = document.querySelectorAll('.commit');
-    const lastCommit = commits[commits.length - 1];
-    return lastCommit;
+    // Spread operator - Using it to turn the HTMLCollection to an actual Array object, and be able to use array methods
+    const commits = [...document.querySelectorAll('.commit')];
+    return commits.pop();
   };
 
   render() {
+    // Object Destructuring - Improves readability and helps avoid repetition
     const { emptyCommits } = this.props;
-    const { filteredCommits: items } = this.state;
+    const { filteredCommits } = this.state;
 
     return (
       <section className="section" id="commit-list">
@@ -76,7 +72,7 @@ class CommitList extends Component {
         <div className="field">
           <div className="control">
             <input
-              onChange={this.onChange}
+              onChange={this.filterCommits}
               className="input"
               type="text"
               placeholder="Search by commit message"
@@ -84,8 +80,10 @@ class CommitList extends Component {
           </div>
         </div>
         <ul className="commits-grid" id="commits">
-          {items.length ? (
-            items.map((commit, index) => <Commit key={index} commit={commit} />)
+          {filteredCommits.length ? (
+            filteredCommits.map((commit, index) => (
+              <Commit key={index} commit={commit} />
+            ))
           ) : (
             <h1>No commits were found</h1>
           )}

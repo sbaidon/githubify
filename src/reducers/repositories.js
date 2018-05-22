@@ -1,4 +1,7 @@
-const repositories = (state = { isFetching: false, items: [] }, action) => {
+const repositories = (
+  state = { lastPage: 0, isFetching: false, items: [] },
+  action,
+) => {
   switch (action.type) {
     case 'FETCH_REPOSITORIES':
       return {
@@ -32,8 +35,7 @@ export const repositoriesByUser = (state = {}, action) => {
 export const activeUser = (state = null, action) => {
   switch (action.type) {
     case 'FETCH_REPOSITORIES':
-      const { user } = action;
-      return user;
+      return action.user;
     default:
       return state;
   }
