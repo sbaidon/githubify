@@ -35,7 +35,7 @@ class Main extends Component {
     if (this.props.commits) {
       loading = loading || this.props.commits.isFetching;
     }
-    return loading;
+    return loading && this.state.isUserValid;
   }
 
   render() {
