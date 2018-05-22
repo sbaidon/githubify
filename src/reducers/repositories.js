@@ -1,7 +1,4 @@
-const repositories = (
-  state = { lastPage: 0, isFetching: false, items: [] },
-  action,
-) => {
+const repositories = (state = { lastPage: 0, isFetching: false, items: [] }, action) => {
   switch (action.type) {
     case 'FETCH_REPOSITORIES':
       return {

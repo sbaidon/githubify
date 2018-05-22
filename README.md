@@ -10,3 +10,10 @@
 
 ## Run prod
 `npm run build`
+
+## Technologies used
+  - JS
+    - React
+    - Redux
+  - CSS
+    - Bulma

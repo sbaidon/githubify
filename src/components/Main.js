@@ -27,13 +27,25 @@ class Main extends Component {
     return this.props.getCommits(repository.owner.login, repository, page);
   };
 
+  isLoading = () => {
+    let loading = false;
+    if (this.props.repositories)  {
+      loading = this.props.repositories.isFetching;
+    }
+    if (this.props.commits) {
+      loading = loading || this.props.commits.isFetching;
+    }
+    return loading;
+  }
+
   render() {
     const showRepositories =
       this.props.activeUser && !this.props.activeRepository;
     const showCommits = !!this.props.activeRepository;
+
     return (
       <div>
-        <UserForm onSubmit={this.onSubmit} />
+        <UserForm isLoading={this.isLoading()} onSubmit={this.onSubmit} />
         {!this.state.isUserValid ? (
           <h1>Please type a valid github username</h1>
         ) : null}

@@ -10,7 +10,7 @@ class RepositoriesList extends Component {
 
   render() {
     return (
-      <section className="section">
+      <section className='section'>
         <ul className="repository-grid">
           {this.props.repositories.items.map((repository, index) => (
             <Repository

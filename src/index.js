@@ -5,6 +5,7 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 import rootReducer from './reducers';
 import App from './App';
+// CSS
 import './index.css';
 import 'bulma/css/bulma.css';
 
@@ -17,7 +18,7 @@ const store = createStore(
 
 ReactDOM.render(
   <Provider store={store}>
-    <App store={store} />
+    <App/>
   </Provider>,
   document.getElementById('root'),
 );

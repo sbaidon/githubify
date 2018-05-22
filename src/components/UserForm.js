@@ -1,6 +1,7 @@
 import React from 'react';
 
-export default function UserForm({ onSubmit }) {
+export default function UserForm({ onSubmit, isLoading }) {
+  const loadingClass = isLoading ? 'is-loading' : '';
   return (
     <form onSubmit={onSubmit}>
       <div className="field has-addons">
@@ -14,7 +15,7 @@ export default function UserForm({ onSubmit }) {
           />
         </div>
         <div className="control">
-          <button type="submit" className="button is-info">
+          <button type="submit" className={`button is-info ${loadingClass}`}>
             Search
           </button>
         </div>
