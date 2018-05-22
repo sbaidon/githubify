@@ -1,12 +1,17 @@
 import { connect } from 'react-redux';
-import { getRepositories, emptyCommits, getCommits } from '../actions';
+import {
+  getRepositories,
+  emptyCommits,
+  getCommits,
+  fetchLastPage,
+} from '../actions';
 import Main from '../components/Main';
 
 const mapStateToProps = ({
   activeRepository,
   activeUser,
   commitsByRepository,
-  repositoriesByUser
+  repositoriesByUser,
 }) => {
   const commits = commitsByRepository[activeRepository];
   const repositories = repositoriesByUser[activeUser];
@@ -14,7 +19,7 @@ const mapStateToProps = ({
     activeRepository,
     activeUser,
     commits,
-    repositories
+    repositories,
   };
 };
 
@@ -26,8 +31,11 @@ const mapDispatchToProps = dispatch => {
     emptyCommits() {
       return dispatch(emptyCommits());
     },
-    getCommits(owner, repository, page = 0) {
+    getCommits(owner, repository, page = 1) {
       return dispatch(getCommits(owner, repository, page));
+    },
+    setLastPage(owner, repository) {
+      return dispatch(fetchLastPage(owner, repository));
     },
   };
 };

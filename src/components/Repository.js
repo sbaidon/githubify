@@ -10,7 +10,7 @@ export default function Respository({ repository, onClick }) {
       <footer className="card-footer">
         <a
           className="card-footer-item"
-          onClick={() => onClick(repository.owner.login, repository.name)}
+          onClick={() => onClick(repository.owner.login, repository)}
         >
           See commits
         </a>

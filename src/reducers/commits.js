@@ -4,14 +4,17 @@ const commits = (state = { isFetching: false, items: [] }, action) => {
       return {
         ...state,
         isFetching: true,
-        lastPage: null,
       };
     case 'RECEIVE_COMMITS':
       return {
         ...state,
         isFetching: false,
-        lastPage: action.lastPage,
         items: [...state.items, ...action.commits],
+      };
+    case 'SET_LAST_PAGE':
+      return {
+        ...state,
+        lastPage: action.lastPage,
       };
     default:
       return state;
@@ -20,6 +23,7 @@ const commits = (state = { isFetching: false, items: [] }, action) => {
 
 export const commitsByRepository = (state = {}, action) => {
   switch (action.type) {
+    case 'SET_LAST_PAGE':
     case 'RECEIVE_COMMITS':
     case 'FETCH_COMMITS':
       return {

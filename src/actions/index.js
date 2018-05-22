@@ -29,28 +29,51 @@ export const receiveRepositories = (repositories, user) => ({
   user,
 });
 
+export const setLastPage = (lastPage, repository) => ({
+  type: 'SET_LAST_PAGE',
+  repository,
+  lastPage,
+});
+
 export const getRepositories = user => {
   return dispatch => {
     dispatch(emptyCommits());
     dispatch(fetchRepositories(user));
     return axios
       .get(`${BASE_URL}/users/${user}/repos`)
-      .then(({ data }) => dispatch(receiveRepositories(data, user)))
+      .then(({ data }) => dispatch(receiveRepositories(data, user)));
   };
 };
 
-const lastPageRegex = /.*&page=(\d*)/;
-
 export const getCommits = (owner, repository, page = 1) => {
   return dispatch => {
-    dispatch(fetchCommits(repository));
+    dispatch(fetchCommits(repository.id));
     return axios
       .get(
-        `${BASE_URL}/repos/${owner}/${repository}/commits?per_page=20&page=${page}&sort=author-date&order=asc`,
+        `${BASE_URL}/repos/${owner}/${repository.name}/commits?per_page=20&page=${page}&sort=author-date&order=asc`,
       )
-      .then((response) => {
-        const lastPage = Number(response.headers.link.match(lastPageRegex).pop());
-        dispatch(receiveCommits(response.data, repository, lastPage)) 
-      })
+      .then(response => {
+        dispatch(receiveCommits(response.data, repository.id));
+      });
+  };
+};
+
+export const fetchLastPage = (owner, repository) => {
+  return dispatch => {
+    return axios
+      .get(
+        `${BASE_URL}/repos/${owner}/${repository.name}/commits?per_page=20&page=1&sort=author-date&order=asc`,
+      )
+      .then(response => {
+        const lastPageRegex = /.*&page=(\d*).*rel="last"/;
+        const link = response.headers.link || null;
+        if (link) {
+          const lastPage = Number(link.match(lastPageRegex).pop());
+          dispatch(setLastPage(lastPage, repository.id));
+          return;
+        }
+        // If there is no link last page is always 0
+        dispatch(setLastPage(1, repository.id));
+      });
   };
 };

@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import Commit from './Commit';
 
 class CommitList extends Component {
-  observer = null;
-
   constructor(props) {
     super(props);
     const { commits: { items } } = props;
@@ -12,6 +10,8 @@ class CommitList extends Component {
       page: 1,
     };
   }
+
+  isLastPage = () => this.state.page >= this.props.lastPage;
 
   onChange = e => {
     this.filterCommits(e.target.value);
@@ -33,35 +33,32 @@ class CommitList extends Component {
     };
   }
 
-  componentDidUpdate() {
-    if(this.observer) {
-      this.observer.observe(this.getLastCommitElement());
+  observerCallback = ([entry], observer) => {
+    if (entry.isIntersecting) {
+      const currentPage = this.state.page;
+      const nextPage = currentPage + 1;
+      observer.unobserve(this.getLastCommit());
+      if (this.isLastPage()) {
+        return;
+      }
+      this.props.getNextCommits(nextPage).then(() => {
+        observer.observe(this.getLastCommit());
+        this.setState({ page: nextPage });
+      });
     }
-  }
+  };
 
   componentDidMount() {
-    if (!this.observer) {
-      const options = { rootMargin: '100px', threshold: 1.0 }
-      this.observer = new IntersectionObserver(() => {
-        if (this.state.page === this.props.lastPage) {
-          this.observer.unobserve(this.getLastCommitElement()); 
-          return;
-        } 
-        const nextPage = this.state.page + 1;
-        this.props.getNextCommits(nextPage);
-        this.observer.unobserve(this.getLastCommitElement());
-        this.setState({ page: nextPage });
-      }, options);
-      const lastCommit = this.getLastCommitElement();
-      this.observer.observe(this.getLastCommitElement());
-    }
+    const options = { rootMargin: '0px', threshold: 1.0 };
+    const observer = new IntersectionObserver(this.observerCallback, options);
+    observer.observe(this.getLastCommit());
   }
 
-  getLastCommitElement = () => {
+  getLastCommit = () => {
     const commits = document.querySelectorAll('.commit');
     const lastCommit = commits[commits.length - 1];
     return lastCommit;
-  }
+  };
 
   render() {
     const { emptyCommits } = this.props;
@@ -71,7 +68,9 @@ class CommitList extends Component {
       <section className="section" id="commit-list">
         <nav className="breadcrumb is-large" aria-label="breadcrumbs">
           <ul>
-            <li><a onClick={emptyCommits}> &larr; Repositories</a></li>
+            <li>
+              <a onClick={emptyCommits}> &larr; Repositories</a>
+            </li>
           </ul>
         </nav>
         <div className="field">
@@ -91,6 +90,9 @@ class CommitList extends Component {
             <h1>No commits were found</h1>
           )}
         </ul>
+        {this.isLastPage() ? (
+          <h1 className="title has-text-centered">No more commits left</h1>
+        ) : null}
       </section>
     );
   }
